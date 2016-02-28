@@ -10,6 +10,19 @@
 import Foundation
 
 extension String {
+    
+    func entireRange() -> Range<String.Index> {
+        return Range<String.Index>(start: startIndex, end: endIndex)
+    }
+    
+    func entireNSRange() -> NSRange {
+        return NSRangeFromRange(entireRange())
+    }
+    
+    func rangeFrom(index: String.Index) -> Range<String.Index> {
+        return Range<String.Index>(start: index, end: endIndex)
+    }
+    
     func rangeFromNSRange(nsRange : NSRange) -> Range<String.Index>? {
         let from16 = utf16.startIndex.advancedBy(nsRange.location, limit: utf16.endIndex)
         let to16 = from16.advancedBy(nsRange.length, limit: utf16.endIndex)

@@ -20,16 +20,30 @@ let htmlSnippet =
 "</body>\n" +
 "</html>"
 
-let LaTeXSnippet = "$$\\sum_{i=0}^{n}$0$$" // "$$\\sum_{i=0}^{n}$1$$" must be double escaped!
+let htmlReverseSnippet =
+"<html>\n" +
+"<head>\n" +
+"  <title>$0</title>\n" +
+"</head>\n" +
+"<body>\n" +
+"$1\n" +
+"</body>\n" +
+"</html>"
+
+let LaTeXSnippet = "$$\\sum_{i=0}^{n}$0$$"
 
 class ViewController: NSViewController {
     let snippets: [Snippet] = [
         Snippet(content: loremSnippet, tabTrigger: "lorem", scope: nil, description: nil),
         Snippet(content: htmlSnippet, tabTrigger: "html", scope: nil, description: nil),
+        Snippet(content: htmlReverseSnippet, tabTrigger: "htmlx", scope: nil, description: nil),
         Snippet(content: LaTeXSnippet, tabTrigger: "sumoveriton", scope: nil, description: nil)
     ]
     
+    // TODO: Track this information in a "SnippetMatching" class that mediates between a string and a snippet
+    
     private var currentSnippet: Snippet?
+    private var startIndex: String.Index?
     private var fieldIndex: Int = -1
 
     override func viewDidLoad() {
@@ -47,6 +61,22 @@ class ViewController: NSViewController {
 }
 
 extension ViewController: NSTextViewDelegate {
+    
+    // TODO: move tabbing and back-tabbing control to doCommandBySelector delegate method
+    
+    func textView(textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
+        switch commandSelector {
+        case Selector("insertTab:"):
+            print("insertTab:")
+            break
+        case Selector("insertBacktab:"):
+            print("insertBacktab:")
+            break
+        default:
+            break
+        }
+        return false
+    }
     
     func textView(textView: NSTextView, shouldChangeTextInRange affectedCharRange: NSRange,  replacementString: String?) -> Bool {
         guard let text = replacementString where text.characters.count > 0 else {
@@ -168,7 +198,7 @@ extension ViewController: NSTextViewDelegate {
             return true
         }
         
-        guard let index = string.rangeFromNSRange(affectedCharRange)?.endIndex else {
+        guard let index = string.rangeFromNSRange(affectedCharRange)?.startIndex else { // endIndex
             return true
         }
         
@@ -176,23 +206,30 @@ extension ViewController: NSTextViewDelegate {
         
         if currentSnippet != nil {
             var finished: Bool = false
-            if let fieldRange = currentSnippet!.rangeForNextField(fromField: fieldIndex, inString: textView.string!, atIndex: string.rangeFromNSRange(affectedCharRange)!.startIndex, finished: &finished) {
+            if let fieldRange = currentSnippet!.rangeForNextField(fromField: fieldIndex, forward: true, inString: textView.string!, atIndex: startIndex!, finished: &finished) {
+                
+                // atIndex: string.rangeFromNSRange(affectedCharRange)!.startIndex
+                
                 textView.setSelectedRange(textView.string!.NSRangeFromRange(fieldRange))
+                
                 if (finished) {
                     currentSnippet = nil
+                    startIndex = nil
                     fieldIndex = -1
                 } else {
                     fieldIndex += 1
                 }
+                
                 return false
             } else {
                 currentSnippet = nil
+                startIndex = nil
                 fieldIndex = -1
                 return true
             }
         }
         
-        // Determine trigger range and string
+        // Determine trigger range and string: it's the word up to index at non-alphnumeric boundaries
         
         let (triggerRange, triggerString) = triggerFor(string, index: index)
         
@@ -202,6 +239,10 @@ extension ViewController: NSTextViewDelegate {
             return true
         }
         
+        // Note the start of the trigger range for later field matching
+        
+        startIndex = triggerRange.startIndex
+        
         // Replace text in range
         
         let replaced = replaceText(textView, range: triggerRange, replacementString: snippet.text)
@@ -209,10 +250,15 @@ extension ViewController: NSTextViewDelegate {
         
         // Advance to the first field or the end of the string if there is none
         
-        if let fieldRange = snippet.rangeForNextField(fromField: 0, inString: textView.string!, atIndex: triggerRange.startIndex, finished: &finished) {
+        if let fieldRange = snippet.rangeForNextField(fromField: 0, forward: true, inString: textView.string!, atIndex:startIndex!, finished: &finished) {
+            
+            // atIndex: triggerRange.startIndex
+            
             textView.setSelectedRange(textView.string!.NSRangeFromRange(fieldRange))
+            
             if (finished) {
                 currentSnippet = nil
+                startIndex = nil
                 fieldIndex = -1
             } else {
                 currentSnippet = snippet
@@ -220,6 +266,7 @@ extension ViewController: NSTextViewDelegate {
             }
         } else {
             currentSnippet = nil
+            startIndex = nil
             fieldIndex = -1
         }
         

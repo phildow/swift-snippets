@@ -31,6 +31,9 @@ class Snippet {
     /// The number of fields in the snippet
     private var snippetFieldCount: Int = 0
     
+    /// Cached regex of content with field markers replaced by capture groups
+    private var captureRegex: NSRegularExpression?
+    
     // MARK: - Initialization
     
     /// Initialize a snippet without a tab trigger
@@ -48,6 +51,16 @@ class Snippet {
         
         self.text = content.snippetContentWithoutFieldMarkers()
         self.snippetFieldCount = content.snippetFieldCount()
+        
+        do {
+            self.captureRegex = try NSRegularExpression(pattern: content
+                .snippetContentReplacingFieldMarkersWithGroupExpressions()
+                .stringByEscapingForRegularExpressionPattern()
+                .stringByRestoringCaptureGroups()
+                , options: [])
+        } catch {
+            print(error)
+        }
     }
     
     // MARK: - Field Ranges
@@ -84,11 +97,9 @@ class Snippet {
             return nil
         }
         
-        // The target field is the next available field forward or backwards
+        // The target field is the next available field forwards or backwards
         
         let targetField = forward ? field + 1 : field - 1
-        
-//        print("field is \(field) and target field is \(targetField), field count is \(snippetFieldCount)")
         
         // Find the index of the targetField in the content
         
@@ -99,21 +110,13 @@ class Snippet {
         
         // Find the matches in the string using content with field markers replaced by capture groups
         
-        var regex: NSRegularExpression!
-        
-        do {
-            let pattern = content
-                .snippetContentReplacingFieldMarkersWithGroupExpressions()
-                .stringByEscapingForRegularExpressionPattern()
-                .stringByRestoringCaptureGroups()
-            regex = try NSRegularExpression(pattern: pattern, options: [])
-        } catch {
-            print(error)
+        guard let captureRegex = captureRegex else {
+            print("no capture group regex available")
             return nil
         }
         
         let fromRange = string.NSRangeFromRange(string.rangeFrom(index))
-        let matches = regex.matchesInString(string, options: [], range: fromRange)
+        let matches = captureRegex.matchesInString(string, options: [], range: fromRange)
         
         guard let match = matches[safe: 0] else {
             print("content not found in string")

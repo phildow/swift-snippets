@@ -14,7 +14,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## About
 
-A snippet is text that replaces an alphanumeric word when the tab key is pressed. It exapands the word to the snippet.
+A snippet is text that replaces an alphanumeric word when the tab key is pressed. It expands the word into the snippet.
 
 Snippets also support *fields*, which allow a user to continuing tabbing within the snippet to move the insertion point to predetermined locations in the snippet. Consequently a snippet is able to behave like a template with empty placeholders that are efficiently filled in.
 
@@ -22,7 +22,7 @@ Snippets also support *fields*, which allow a user to continuing tabbing within 
 
 The insipration for this implementation comes from [Sublime Text](https://www.sublimetext.com/). Refer to the Sublime Text Snippets documentation for more information: [http://docs.sublimetext.info/en/latest/extensibility/snippets.html#snippet-features](http://docs.sublimetext.info/en/latest/extensibility/snippets.html#snippet-features)
 
-Only a subset of the snippets functionality in Sublime is supported right now. Fields are supported but the `$0` field is not. Snippet variables, mirrored fiels, and placeholders are not supported. At some future point they may be.
+Only a subset of the snippets functionality in Sublime is supported right now. Fields are supported but the `$0` field is not. Snippet variables, mirrored fields, and placeholders are not supported. At some future point they may be.
 
 ## Demo
 
@@ -40,3 +40,5 @@ Download the project and run the application. Try typing "html" into the text fi
 ```
 
 And the insertion point is moved to the title tag's content. Press *tab* again and the insertion point is moved to the body tag's content. Press *shift-tab* to move the insertion point back to the title tag.
+
+You may define additional snippets and manage them in any way you like. Sublime uses XML, you might use a property list or json and extend the Snippet class to initialize from that kind of data.

@@ -712,6 +712,9 @@
                             <constraint firstItem="n5v-4m-R9n" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="vGn-NS-bro"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="textView" destination="75J-TQ-vFb" id="dcJ-3p-MqP"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

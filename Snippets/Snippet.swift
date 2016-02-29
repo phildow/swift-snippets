@@ -16,7 +16,7 @@ class Snippet {
     /// The content of the snippet, including field markets, placeholders, etc...
     private(set) var content: String
     
-    /// The text which triggers the snippet on a tab
+    /// The text which triggers the snippet on a tab, must contain only alphanumeric characters
     private(set) var tabTrigger: String?
     
     /// User provided description of the snippet

@@ -21,6 +21,7 @@
 		E33EC48C1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC48B1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift */; };
 		E33EC48F1C83E1EC00AF3356 /* String+Snippet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC48E1C83E1EC00AF3356 /* String+Snippet.swift */; };
 		E33EC4911C83E21900AF3356 /* StringSnippetExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC4901C83E21900AF3356 /* StringSnippetExtensionTests.swift */; };
+		E3F29CD21C8411430044458A /* SnippetTextViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3F29CD11C8411430044458A /* SnippetTextViewHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		E33EC48B1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Replacement.swift"; sourceTree = "<group>"; };
 		E33EC48E1C83E1EC00AF3356 /* String+Snippet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Snippet.swift"; sourceTree = "<group>"; };
 		E33EC4901C83E21900AF3356 /* StringSnippetExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringSnippetExtensionTests.swift; sourceTree = "<group>"; };
+		E3F29CD11C8411430044458A /* SnippetTextViewHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnippetTextViewHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,12 +113,12 @@
 		E33EC43E1C82993600AF3356 /* Snippets */ = {
 			isa = PBXGroup;
 			children = (
+				E33EC4451C82993600AF3356 /* Main.storyboard */,
 				E33EC43F1C82993600AF3356 /* AppDelegate.swift */,
 				E33EC4411C82993600AF3356 /* ViewController.swift */,
-				E33EC4731C829E8700AF3356 /* Snippet.swift */,
+				E3F29CD31C84164D0044458A /* Snippet */,
 				E33EC48D1C83E1DC00AF3356 /* Extensions */,
 				E33EC4431C82993600AF3356 /* Assets.xcassets */,
-				E33EC4451C82993600AF3356 /* Main.storyboard */,
 				E33EC4481C82993600AF3356 /* Info.plist */,
 			);
 			path = Snippets;
@@ -152,6 +154,15 @@
 				E33EC48B1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		E3F29CD31C84164D0044458A /* Snippet */ = {
+			isa = PBXGroup;
+			children = (
+				E3F29CD11C8411430044458A /* SnippetTextViewHelper.swift */,
+				E33EC4731C829E8700AF3356 /* Snippet.swift */,
+			);
+			name = Snippet;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,6 +302,7 @@
 				E33EC4721C829BED00AF3356 /* String+Range.swift in Sources */,
 				E33EC48A1C83851800AF3356 /* Array+SafeIndexing.swift in Sources */,
 				E33EC48C1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift in Sources */,
+				E3F29CD21C8411430044458A /* SnippetTextViewHelper.swift in Sources */,
 				E33EC4741C829E8700AF3356 /* Snippet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,6 +527,7 @@
 				E33EC4631C82993600AF3356 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E33EC4641C82993600AF3356 /* Build configuration list for PBXNativeTarget "SnippetsTests" */ = {
 			isa = XCConfigurationList;
@@ -523,6 +536,7 @@
 				E33EC4661C82993600AF3356 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E33EC4671C82993600AF3356 /* Build configuration list for PBXNativeTarget "SnippetsUITests" */ = {
 			isa = XCConfigurationList;
@@ -531,6 +545,7 @@
 				E33EC4691C82993600AF3356 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

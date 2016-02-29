@@ -10,6 +10,9 @@ import Foundation
 
 class Snippet {
     
+    /// Use this constant when seeking the range for next field in a newly entered snippet
+    static var NewSnippetField: Int = -1
+    
     /// The content of the snippet, including field markets, placeholders, etc...
     private(set) var content: String
     
@@ -50,21 +53,48 @@ class Snippet {
     // MARK: - Field Ranges
     
     /// Return the range for the next field or nil if unavilable
+    /// - parameter fromField:  The field from which to locate the next or pevious field.
+    ///                         Use `-1` to receive the first field range, which may be `$0` or `$1`.
+    /// - parameter forward:    Find the range for the next field (`true`) or previous field (`false`).
+    /// - parameter inString:   The user text being scanned.
+    /// - parameter atIndex:    The location at inString from which to look for the next field.
+    /// - parameter finished:   Set to `true` if there are no more fields in front of `field`
+    
     func rangeForNextField(fromField field: Int, forward: Bool, inString string: String, atIndex index: String.Index, inout finished: Bool) -> Range<String.Index>? {
         
         // Default to finished so that we don't have keep setting it when we bail
         
         finished = true
         
+        // If there are no fields, we have nothing to do
+        
         guard fieldCount > 0 else {
             return nil
         }
         
+// Begin : Don't like these adjustments so we don't botch the $0 field. Let's ignore it
+        
+        // Adjust the field to account for newly entered snippets
+        
+        let adjustedField = field == Snippet.NewSnippetField ? 0 : field
+        
         // The target field is the next available field or the zero field if there are none
         // Depending on whether we're moving forwards or backwards
         
-        let targetField = forward ? ( field + 1 < fieldCount ? field + 1 : 0 )
-                                  : ( field - 1 > 0 ? field - 1 : fieldCount )
+        let targetField = forward ? ( adjustedField + 1 < fieldCount ? adjustedField + 1 : 0 )
+                                  : ( adjustedField - 1 > 0 ? adjustedField - 1 : fieldCount )
+        
+        print("field is \(field) and target field is \(targetField), field count is \(fieldCount)")
+        
+        // If we're starting from the $0 field or the last field and want to move forward, we're done
+        
+        guard !((field == 0 || field == fieldCount) && forward) else {
+            return nil
+        }
+        
+// End
+        
+        // If we're starting from the
         
         // Find the index of the targetField in the content
         

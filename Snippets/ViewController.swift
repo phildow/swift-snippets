@@ -62,34 +62,34 @@ class ViewController: NSViewController {
 
 extension ViewController: NSTextViewDelegate {
     
-    // TODO: move tabbing and back-tabbing control to doCommandBySelector delegate method
+//    func textView(textView: NSTextView, shouldChangeTextInRange affectedCharRange: NSRange,  replacementString: String?) -> Bool {
+//        guard let text = replacementString where text.characters.count > 0 else {
+//            return true
+//        }
+//        
+//        switch text {
+//        case "\n", "\r":
+//            return textViewShouldNewlineInRange(textView, affectedCharRange: affectedCharRange, replacementString: text)
+//        case "\t":
+//            return textViewShouldTabInRange(textView, affectedCharRange: affectedCharRange, replacementString: text)
+//        default:
+//            return true
+//        }
+//    }
     
     func textView(textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
+        // Return true to indicate that I handled the command, false otherwise
+        let range = textView.selectedRange()
+        
         switch commandSelector {
         case Selector("insertTab:"):
             print("insertTab:")
-            break
+            return textViewShouldTabInRange(textView, affectedCharRange: range, forward: true)
         case Selector("insertBacktab:"):
             print("insertBacktab:")
-            break
+            return textViewShouldTabInRange(textView, affectedCharRange: range, forward: false)
         default:
-            break
-        }
-        return false
-    }
-    
-    func textView(textView: NSTextView, shouldChangeTextInRange affectedCharRange: NSRange,  replacementString: String?) -> Bool {
-        guard let text = replacementString where text.characters.count > 0 else {
-            return true
-        }
-        
-        switch text {
-        case "\n", "\r":
-            return textViewShouldNewlineInRange(textView, affectedCharRange: affectedCharRange, replacementString: text)
-        case "\t":
-            return textViewShouldTabInRange(textView, affectedCharRange: affectedCharRange, replacementString: text)
-        default:
-            return true
+            return false
         }
     }
     
@@ -192,40 +192,45 @@ extension ViewController: NSTextViewDelegate {
 //        }
 //    }
     
-    func textViewShouldTabInRange(textView: NSTextView, affectedCharRange: NSRange, replacementString: String) -> Bool {
+    // TODO: backtabbing means we might have to ignore finished
+    // TODO: if ignoring finished so that I can backtab, we need a way to know we're no longer in a snippet
+    
+    func textViewShouldTabInRange(textView: NSTextView, affectedCharRange: NSRange, forward: Bool) -> Bool {
         
         guard let string = textView.string else {
-            return true
+            return false // true
         }
         
         guard let index = string.rangeFromNSRange(affectedCharRange)?.startIndex else { // endIndex
-            return true
+            return false // true
         }
         
         // If we are already editing a snippet, advance to the next field or the end of the snippet
         
         if currentSnippet != nil {
             var finished: Bool = false
-            if let fieldRange = currentSnippet!.rangeForNextField(fromField: fieldIndex, forward: true, inString: textView.string!, atIndex: startIndex!, finished: &finished) {
+            if let fieldRange = currentSnippet!.rangeForNextField(fromField: fieldIndex, forward: forward, inString: textView.string!, atIndex: startIndex!, finished: &finished) {
                 
                 // atIndex: string.rangeFromNSRange(affectedCharRange)!.startIndex
                 
                 textView.setSelectedRange(textView.string!.NSRangeFromRange(fieldRange))
                 
-                if (finished) {
-                    currentSnippet = nil
-                    startIndex = nil
-                    fieldIndex = -1
-                } else {
-                    fieldIndex += 1
-                }
+//                if (finished) {
+//                    currentSnippet = nil
+//                    startIndex = nil
+//                    fieldIndex = -1
+//                } else {
+                    fieldIndex += forward ? 1 : -1
+//                }
                 
-                return false
+                return true // false
             } else {
                 currentSnippet = nil
                 startIndex = nil
                 fieldIndex = -1
-                return true
+                
+                // Let the snippet fall through to the next possibility
+                // return false // true
             }
         }
         
@@ -236,7 +241,7 @@ extension ViewController: NSTextViewDelegate {
         // Match trigger string to snippet: indexOf with a predicate
         
         guard let snippet = snippetForTrigger(triggerString) else {
-            return true
+            return false // true
         }
         
         // Note the start of the trigger range for later field matching
@@ -250,30 +255,30 @@ extension ViewController: NSTextViewDelegate {
         
         // Advance to the first field or the end of the string if there is none
         
-        if let fieldRange = snippet.rangeForNextField(fromField: 0, forward: true, inString: textView.string!, atIndex:startIndex!, finished: &finished) {
+        if let fieldRange = snippet.rangeForNextField(fromField: Snippet.NewSnippetField, forward: forward, inString: textView.string!, atIndex:startIndex!, finished: &finished) {
             
             // atIndex: triggerRange.startIndex
             
             textView.setSelectedRange(textView.string!.NSRangeFromRange(fieldRange))
             
-            if (finished) {
-                currentSnippet = nil
-                startIndex = nil
-                fieldIndex = -1
-            } else {
+//            if (finished) {
+//                currentSnippet = nil
+//                startIndex = nil
+//                fieldIndex = -1
+//            } else {
                 currentSnippet = snippet
                 fieldIndex = 1
-            }
+//            }
         } else {
             currentSnippet = nil
             startIndex = nil
             fieldIndex = -1
         }
         
-        return !replaced
+        return replaced // !replaced
     }
     
-    func textViewShouldNewlineInRange(textView: NSTextView, affectedCharRange: NSRange,  replacementString: String) -> Bool {
+    func textViewShouldNewlineInRange(textView: NSTextView, affectedCharRange: NSRange) -> Bool {
         return true
     }
 }

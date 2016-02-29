@@ -19,6 +19,8 @@
 		E33EC4881C83776500AF3356 /* SnippetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC4871C83776500AF3356 /* SnippetTests.swift */; };
 		E33EC48A1C83851800AF3356 /* Array+SafeIndexing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC4891C83851800AF3356 /* Array+SafeIndexing.swift */; };
 		E33EC48C1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC48B1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift */; };
+		E33EC48F1C83E1EC00AF3356 /* String+Snippet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC48E1C83E1EC00AF3356 /* String+Snippet.swift */; };
+		E33EC4911C83E21900AF3356 /* StringSnippetExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33EC4901C83E21900AF3356 /* StringSnippetExtensionTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		E33EC4871C83776500AF3356 /* SnippetTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnippetTests.swift; sourceTree = "<group>"; };
 		E33EC4891C83851800AF3356 /* Array+SafeIndexing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SafeIndexing.swift"; sourceTree = "<group>"; };
 		E33EC48B1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Replacement.swift"; sourceTree = "<group>"; };
+		E33EC48E1C83E1EC00AF3356 /* String+Snippet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Snippet.swift"; sourceTree = "<group>"; };
+		E33EC4901C83E21900AF3356 /* StringSnippetExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringSnippetExtensionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,10 +114,7 @@
 				E33EC43F1C82993600AF3356 /* AppDelegate.swift */,
 				E33EC4411C82993600AF3356 /* ViewController.swift */,
 				E33EC4731C829E8700AF3356 /* Snippet.swift */,
-				E33EC4711C829BED00AF3356 /* String+RangeUtilities.swift */,
-				E33EC4891C83851800AF3356 /* Array+SafeIndexing.swift */,
-				E33EC4751C82DFF800AF3356 /* NSString+RegExEscape.swift */,
-				E33EC48B1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift */,
+				E33EC48D1C83E1DC00AF3356 /* Extensions */,
 				E33EC4431C82993600AF3356 /* Assets.xcassets */,
 				E33EC4451C82993600AF3356 /* Main.storyboard */,
 				E33EC4481C82993600AF3356 /* Info.plist */,
@@ -126,6 +127,7 @@
 			children = (
 				E33EC4511C82993600AF3356 /* SnippetsTests.swift */,
 				E33EC4871C83776500AF3356 /* SnippetTests.swift */,
+				E33EC4901C83E21900AF3356 /* StringSnippetExtensionTests.swift */,
 				E33EC4531C82993600AF3356 /* Info.plist */,
 			);
 			path = SnippetsTests;
@@ -138,6 +140,18 @@
 				E33EC45E1C82993600AF3356 /* Info.plist */,
 			);
 			path = SnippetsUITests;
+			sourceTree = "<group>";
+		};
+		E33EC48D1C83E1DC00AF3356 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E33EC48E1C83E1EC00AF3356 /* String+Snippet.swift */,
+				E33EC4711C829BED00AF3356 /* String+RangeUtilities.swift */,
+				E33EC4891C83851800AF3356 /* Array+SafeIndexing.swift */,
+				E33EC4751C82DFF800AF3356 /* NSString+RegExEscape.swift */,
+				E33EC48B1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,6 +287,7 @@
 				E33EC4421C82993600AF3356 /* ViewController.swift in Sources */,
 				E33EC4401C82993600AF3356 /* AppDelegate.swift in Sources */,
 				E33EC4761C82DFF800AF3356 /* NSString+RegExEscape.swift in Sources */,
+				E33EC48F1C83E1EC00AF3356 /* String+Snippet.swift in Sources */,
 				E33EC4721C829BED00AF3356 /* String+RangeUtilities.swift in Sources */,
 				E33EC48A1C83851800AF3356 /* Array+SafeIndexing.swift in Sources */,
 				E33EC48C1C83DE3C00AF3356 /* NSMutableAttributedString+Replacement.swift in Sources */,
@@ -286,6 +301,7 @@
 			files = (
 				E33EC4521C82993600AF3356 /* SnippetsTests.swift in Sources */,
 				E33EC4881C83776500AF3356 /* SnippetTests.swift in Sources */,
+				E33EC4911C83E21900AF3356 /* StringSnippetExtensionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -46,8 +46,8 @@ class Snippet {
         self.scope = scope
         self.description = description
         
-        self.text = Snippet.contentWithoutFieldMarkers(content)
-        self.fieldCount = Snippet.fieldCount(content)
+        self.text = content.contentWithoutFieldMarkers()
+        self.fieldCount = content.fieldCount()
     }
     
     // MARK: - Field Ranges
@@ -89,7 +89,7 @@ class Snippet {
         
         // Find the index of the targetField in the content
         
-        guard let targetFieldIndex = Snippet.indexOfField(targetField, inContent: content) else {
+        guard let targetFieldIndex = content.indexOfField(targetField) else {
             print("unable to locate field: \(targetField)")
             return nil
         }
@@ -99,7 +99,8 @@ class Snippet {
         var regex: NSRegularExpression!
         
         do {
-            let pattern = Snippet.contentReplacingFieldMarkersWithGroupExpressions(content)
+            let pattern = content
+                .contentReplacingFieldMarkersWithGroupExpressions()
                 .stringByEscapingForRegularExpressionPattern()
                 .stringByRestoringCaptureGroups()
             regex = try NSRegularExpression(pattern: pattern, options: [])
@@ -129,73 +130,5 @@ class Snippet {
         let targetFieldRange = string.rangeFromNSRange(match.rangeAtIndex(targetFieldIndex + 1))
         return targetFieldRange
     }
-    
-    // MARK: - Utilities
-    
-    // TODO: all these class funcs are really string extensions
-    
-    /// Returns the number of fields in a string
-    class func fieldCount(content: String) -> Int {
-        do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
-            let range = content.entireNSRange()
-            
-            let matches = regex.matchesInString(content, options: [], range: range)
-            return matches.count
-        } catch {
-            print(error)
-            return 0
-        }
-    }
-    
-    /// Removes the field markers from a string
-    class func contentWithoutFieldMarkers(content: String) -> String {
-        do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
-            let range = content.entireNSRange()
-            let template = ""
-            
-            return regex.stringByReplacingMatchesInString(content, options: [], range: range, withTemplate: template)
-        } catch {
-            print(error)
-            return content
-        }
-    }
-    
-    /// Replaces the field markers in a string with capture groups
-    class func contentReplacingFieldMarkersWithGroupExpressions(content: String) -> String {
-        do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
-            let range = content.entireNSRange()
-            let template = "(.*)"
-            
-            return regex.stringByReplacingMatchesInString(content, options: [], range: range, withTemplate: template)
-        } catch {
-            print(error)
-            return content
-        }
-    }
-    
-    /// Returns the index of a field in a string
-    class func indexOfField(field: Int, inContent content: String) -> Int? {
-        do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
-            let range = content.entireNSRange()
-            let marker = "$\(field)"
-            
-            let matches = regex.matchesInString(content, options: [], range: range)
-            
-            return matches.indexOf({ (result: NSTextCheckingResult) -> Bool in
-                // would prefer to use $0 here but get an ambiguous context eror
-                guard let matchRange = content.rangeFromNSRange(result.range) else {
-                    return false
-                }
-                return content.substringWithRange(matchRange) == marker
-            })
-            
-        } catch {
-            print(error)
-            return nil
-        }
-    }
+
 }

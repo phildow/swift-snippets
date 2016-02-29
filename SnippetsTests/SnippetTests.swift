@@ -59,7 +59,6 @@ class SnippetTests: XCTestCase {
         XCTAssertEqual(Snippet.indexOfField(1, inContent: "$1 $2"), 0)
         XCTAssertEqual(Snippet.indexOfField(2, inContent: "$1 $2"), 1)
         XCTAssertEqual(Snippet.indexOfField(1, inContent: "$2 $1"), 1)
-        XCTAssertEqual(Snippet.indexOfField(0, inContent: "$2 $1 $0"), 2)
     }
 
 }

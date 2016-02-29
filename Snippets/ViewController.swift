@@ -16,21 +16,21 @@ let htmlSnippet =
 "  <title>$1</title>\n" +
 "</head>\n" +
 "<body>\n" +
-"$0\n" +
+"$2\n" +
 "</body>\n" +
 "</html>"
 
 let htmlReverseSnippet =
 "<html>\n" +
 "<head>\n" +
-"  <title>$0</title>\n" +
+"  <title>$2</title>\n" +
 "</head>\n" +
 "<body>\n" +
 "$1\n" +
 "</body>\n" +
 "</html>"
 
-let LaTeXSnippet = "$$\\sum_{i=0}^{n}$0$$"
+let LaTeXSnippet = "$$\\sum_{i=0}^{n}$1$$"
 
 class ViewController: NSViewController {
     let snippets: [Snippet] = [
@@ -62,21 +62,6 @@ class ViewController: NSViewController {
 
 extension ViewController: NSTextViewDelegate {
     
-//    func textView(textView: NSTextView, shouldChangeTextInRange affectedCharRange: NSRange,  replacementString: String?) -> Bool {
-//        guard let text = replacementString where text.characters.count > 0 else {
-//            return true
-//        }
-//        
-//        switch text {
-//        case "\n", "\r":
-//            return textViewShouldNewlineInRange(textView, affectedCharRange: affectedCharRange, replacementString: text)
-//        case "\t":
-//            return textViewShouldTabInRange(textView, affectedCharRange: affectedCharRange, replacementString: text)
-//        default:
-//            return true
-//        }
-//    }
-    
     func textView(textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
         // Return true to indicate that I handled the command, false otherwise
         let range = textView.selectedRange()
@@ -92,29 +77,6 @@ extension ViewController: NSTextViewDelegate {
             return false
         }
     }
-    
-//        let boundaries = NSCharacterSet.alphanumericCharacterSet().invertedSet
-//        let string = textView.string!
-//        
-//        let startIndex = string.startIndex
-//        let endIndex = string.rangeFromNSRange(affectedCharRange)!.endIndex
-//        let searchRange = Range<String.Index>(start: startIndex, end: endIndex)
-//        
-//        var range = string.rangeOfCharacterFromSet(boundaries, options: .BackwardsSearch, range: searchRange)
-//        
-//        if range == nil {
-//            // Want entire range
-//            range = Range<String.Index>(start: string.startIndex, end: string.endIndex)
-//        } else {
-//            // Advance by one to ignore matched character
-//            range!.startIndex = range!.startIndex.advancedBy(1)
-//        }
-//        
-//        let triggerRange = Range<String.Index>(start: range!.startIndex, end: searchRange.endIndex)
-//        let triggerString = string.substringWithRange(triggerRange)
-    
-    /// Takes the characters between the first non alphanumeric string before index and index.
-    /// Returns the range of that string and the string itself.
     
     func triggerFor(string: String, index: String.Index) -> (range: Range<String.Index>, string: String) {
         let boundaries = NSCharacterSet.alphanumericCharacterSet().invertedSet
@@ -136,18 +98,6 @@ extension ViewController: NSTextViewDelegate {
         return (triggerRange, triggerString)
     }
     
-//        guard textView.shouldChangeTextInRange(string.NSRangeFromRange(triggerRange), replacementString: content) else {
-//            return true
-//        }
-//        
-//        textView.textStorage?.beginEditing()
-//        textView.textStorage?.replaceCharactersInRange(string.NSRangeFromRange(triggerRange), withString: content)
-//        textView.textStorage?.endEditing()
-        
-//        return false
-    
-    /// Returns true if the range was replaced, false if not.
-    
     func replaceText(textView: NSTextView, range: Range<String.Index>, replacementString: String) -> Bool {
         guard let string = textView.string else {
             return false
@@ -162,6 +112,28 @@ extension ViewController: NSTextViewDelegate {
         textView.textStorage?.endEditing()
         
         return true
+    }
+    
+    func replaceText(textView: NSTextView, ranges: [Range<String.Index>], replacementStrings: [String]) -> Bool {
+        guard let string = textView.string else {
+            return false
+        }
+        
+        guard ranges.count > 0 && ranges.count == replacementStrings.count else {
+            return false
+        }
+        
+        let rangeValues = ranges.map({NSValue(range: string.NSRangeFromRange($0))})
+        
+        guard textView.shouldChangeTextInRanges(rangeValues, replacementStrings: replacementStrings) else {
+            return false
+        }
+        
+        textView.textStorage?.beginEditing()
+        textView.textStorage?.replaceCharactersInRanges(ranges, withStrings: replacementStrings)
+        textView.textStorage?.endEditing()
+        
+        return false
     }
     
 //        guard let i = snippets.indexOf({$0.tabTrigger == triggerString}) else {
@@ -192,45 +164,28 @@ extension ViewController: NSTextViewDelegate {
 //        }
 //    }
     
-    // TODO: backtabbing means we might have to ignore finished
-    // TODO: if ignoring finished so that I can backtab, we need a way to know we're no longer in a snippet
-    
     func textViewShouldTabInRange(textView: NSTextView, affectedCharRange: NSRange, forward: Bool) -> Bool {
         
         guard let string = textView.string else {
-            return false // true
+            return false
         }
         
         guard let index = string.rangeFromNSRange(affectedCharRange)?.startIndex else { // endIndex
-            return false // true
+            return false
         }
         
         // If we are already editing a snippet, advance to the next field or the end of the snippet
+        // If there is no additional field, reset and let it fall through to another tab trigger
         
         if currentSnippet != nil {
-            var finished: Bool = false
-            if let fieldRange = currentSnippet!.rangeForNextField(fromField: fieldIndex, forward: forward, inString: textView.string!, atIndex: startIndex!, finished: &finished) {
-                
-                // atIndex: string.rangeFromNSRange(affectedCharRange)!.startIndex
-                
+            if let fieldRange = currentSnippet!.rangeForNextField(fromField: fieldIndex, forward: forward, inString: textView.string!, atIndex: startIndex!) {
                 textView.setSelectedRange(textView.string!.NSRangeFromRange(fieldRange))
-                
-//                if (finished) {
-//                    currentSnippet = nil
-//                    startIndex = nil
-//                    fieldIndex = -1
-//                } else {
-                    fieldIndex += forward ? 1 : -1
-//                }
-                
-                return true // false
+                fieldIndex += forward ? 1 : -1
+                return true
             } else {
                 currentSnippet = nil
                 startIndex = nil
                 fieldIndex = -1
-                
-                // Let the snippet fall through to the next possibility
-                // return false // true
             }
         }
         
@@ -241,7 +196,7 @@ extension ViewController: NSTextViewDelegate {
         // Match trigger string to snippet: indexOf with a predicate
         
         guard let snippet = snippetForTrigger(triggerString) else {
-            return false // true
+            return false
         }
         
         // Note the start of the trigger range for later field matching
@@ -251,31 +206,20 @@ extension ViewController: NSTextViewDelegate {
         // Replace text in range
         
         let replaced = replaceText(textView, range: triggerRange, replacementString: snippet.text)
-        var finished: Bool = false
         
         // Advance to the first field or the end of the string if there is none
         
-        if let fieldRange = snippet.rangeForNextField(fromField: Snippet.NewSnippetField, forward: forward, inString: textView.string!, atIndex:startIndex!, finished: &finished) {
-            
-            // atIndex: triggerRange.startIndex
-            
+        if let fieldRange = snippet.rangeForNextField(fromField: Snippet.NewSnippetField, forward: forward, inString: textView.string!, atIndex:startIndex!) {
             textView.setSelectedRange(textView.string!.NSRangeFromRange(fieldRange))
-            
-//            if (finished) {
-//                currentSnippet = nil
-//                startIndex = nil
-//                fieldIndex = -1
-//            } else {
-                currentSnippet = snippet
-                fieldIndex = 1
-//            }
+            currentSnippet = snippet
+            fieldIndex = 1
         } else {
             currentSnippet = nil
             startIndex = nil
             fieldIndex = -1
         }
         
-        return replaced // !replaced
+        return replaced
     }
     
     func textViewShouldNewlineInRange(textView: NSTextView, affectedCharRange: NSRange) -> Bool {

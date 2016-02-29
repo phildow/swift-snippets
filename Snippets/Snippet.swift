@@ -11,7 +11,7 @@ import Foundation
 class Snippet {
     
     /// Use this constant when seeking the range for next field in a newly entered snippet
-    static var NewSnippetField: Int = -1
+    static var NewSnippetField: Int = 0
     
     /// The content of the snippet, including field markets, placeholders, etc...
     private(set) var content: String
@@ -52,49 +52,40 @@ class Snippet {
     
     // MARK: - Field Ranges
     
+    // TODO: make it work with multiple ranges for mirrored fields
+    
     /// Return the range for the next field or nil if unavilable
     /// - parameter fromField:  The field from which to locate the next or pevious field.
-    ///                         Use `-1` to receive the first field range, which may be `$0` or `$1`.
+    ///                         Use `NewSnippetField` to advance to the first field
     /// - parameter forward:    Find the range for the next field (`true`) or previous field (`false`).
     /// - parameter inString:   The user text being scanned.
     /// - parameter atIndex:    The location at inString from which to look for the next field.
-    /// - parameter finished:   Set to `true` if there are no more fields in front of `field`
     
-    func rangeForNextField(fromField field: Int, forward: Bool, inString string: String, atIndex index: String.Index, inout finished: Bool) -> Range<String.Index>? {
+    func rangeForNextField(fromField field: Int, forward: Bool, inString string: String, atIndex index: String.Index) -> Range<String.Index>? {
         
-        // Default to finished so that we don't have keep setting it when we bail
-        
-        finished = true
-        
-        // If there are no fields, we have nothing to do
+        // Done if there are no fields
         
         guard fieldCount > 0 else {
             return nil
         }
         
-// Begin : Don't like these adjustments so we don't botch the $0 field. Let's ignore it
+        // Done if the last field wants to move forward
         
-        // Adjust the field to account for newly entered snippets
-        
-        let adjustedField = field == Snippet.NewSnippetField ? 0 : field
-        
-        // The target field is the next available field or the zero field if there are none
-        // Depending on whether we're moving forwards or backwards
-        
-        let targetField = forward ? ( adjustedField + 1 < fieldCount ? adjustedField + 1 : 0 )
-                                  : ( adjustedField - 1 > 0 ? adjustedField - 1 : fieldCount )
-        
-        print("field is \(field) and target field is \(targetField), field count is \(fieldCount)")
-        
-        // If we're starting from the $0 field or the last field and want to move forward, we're done
-        
-        guard !((field == 0 || field == fieldCount) && forward) else {
+        if field == fieldCount && forward {
             return nil
         }
         
-// End
+        // Done if the first field wants to move backwards
         
-        // If we're starting from the
+        if field == 1 && !forward {
+            return nil
+        }
+        
+        // The target field is the next available field forward or backwards
+        
+        let targetField = forward ? field + 1 : field - 1
+        
+//        print("field is \(field) and target field is \(targetField), field count is \(fieldCount)")
         
         // Find the index of the targetField in the content
         
@@ -136,78 +127,12 @@ class Snippet {
         // Otherwise we have what we want, wrap it up
         
         let targetFieldRange = string.rangeFromNSRange(match.rangeAtIndex(targetFieldIndex + 1))
-        
-        if targetField != 0 {
-            finished = false
-        }
-        
         return targetFieldRange
     }
     
-//    func rangeForNextField(fromField field: Int, inString string: String, atIndex index: String.Index, inout finished: Bool) -> Range<String.Index>? {
-//        
-//        // Take the content from the end of the current field, or the whole string if 0
-//        
-//        let marker = "$\(field)"
-//        var subcontent: String = ""
-//        
-//        if field == 0 {
-//            subcontent = content
-//        } else {
-//            guard let range = content.rangeOfString(marker) else {
-//                print("could not find range of current marker for field \(field)")
-//                return nil
-//            }
-//            subcontent = content.substringFromIndex(range.endIndex)
-//        }
-//        
-//        // Turn the subcontent into a regular expression replacing field markers with group captures
-//        // Before creating the regex, escape the subcontent (it may contain reserved regex characters)
-//        
-//        var regex: NSRegularExpression!
-//        
-//        do {
-//            let pattern = Snippet.contentReplacingFieldMarkersWithGroupExpressions(subcontent)
-//                .stringByEscapingForRegularExpressionPattern()
-//                .stringByRestoringCaptureGroups()
-//            regex = try NSRegularExpression(pattern: pattern, options: [])
-//        } catch {
-//            print(error)
-//            return nil
-//        }
-//        
-//        // Starting from the index at inString, locate the next available group 
-//        // capture match and return its location
-//        
-//        let indexRange = Range<String.Index>(start: index, end: string.endIndex)
-//        let range = string.NSRangeFromRange(indexRange)
-//        
-//        let matches = regex.matchesInString(string, options: [], range: range)
-//        
-//        guard matches.count > 0 else {
-//            print("no match found")
-//            return nil
-//        }
-//        
-//        let match = matches[0]
-//        
-//        // The zeroeth match is the entire string itself, the oneth match is the group
-//        
-//        guard match.numberOfRanges >= 2 else {
-//            print("no match found")
-//            return nil
-//        }
-//        
-//        let matchedRange = match.rangeAtIndex(1)
-//        
-//        // If there are only two matches or less, no more are available
-//        
-//        finished = match.numberOfRanges <= 2
-//        
-//        return string.rangeFromNSRange(matchedRange)
-//    }
-    
     // MARK: - Utilities
+    
+    // TODO: all these class funcs are really string extensions
     
     /// Returns the number of fields in a string
     class func fieldCount(content: String) -> Int {

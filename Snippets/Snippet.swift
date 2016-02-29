@@ -55,11 +55,14 @@ class Snippet {
     // TODO: make it work with multiple ranges for mirrored fields
     
     /// Return the range for the next field or nil if unavilable
-    /// - parameter fromField:  The field from which to locate the next or pevious field.
-    ///                         Use `NewSnippetField` to advance to the first field
-    /// - parameter forward:    Find the range for the next field (`true`) or previous field (`false`).
+    /// - parameter fromField:  The field from which to locate the next or
+    ///                         pevious field. Use `NewSnippetField` to advance 
+    ///                         to the first field
+    /// - parameter forward:    Find the range for the next field (`true`) or 
+    ///                         previous field (`false`).
     /// - parameter inString:   The user text being scanned.
-    /// - parameter atIndex:    The location at inString from which to look for the next field.
+    /// - parameter atIndex:    The location at inString from which to look for 
+    ///                         the next field.
     
     func rangeForNextField(fromField field: Int, forward: Bool, inString string: String, atIndex index: String.Index) -> Range<String.Index>? {
         

@@ -21,44 +21,44 @@ class StringSnippetTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFieldCount() {
+    func testsnippetFieldCount() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         
-        XCTAssertEqual("".fieldCount(), 0)
-        XCTAssertEqual("$".fieldCount(), 0)
-        XCTAssertEqual("$1".fieldCount(), 1)
-        XCTAssertEqual("$10".fieldCount(), 1)
-        XCTAssertEqual("$1$2".fieldCount(), 2)
-        XCTAssertEqual("$1$20".fieldCount(), 2)
-        XCTAssertEqual("$1...$1".fieldCount(), 2)
-        XCTAssertEqual("...$1...$2...".fieldCount(), 2)
+        XCTAssertEqual("".snippetFieldCount(), 0)
+        XCTAssertEqual("$".snippetFieldCount(), 0)
+        XCTAssertEqual("$1".snippetFieldCount(), 1)
+        XCTAssertEqual("$10".snippetFieldCount(), 1)
+        XCTAssertEqual("$1$2".snippetFieldCount(), 2)
+        XCTAssertEqual("$1$20".snippetFieldCount(), 2)
+        XCTAssertEqual("$1...$1".snippetFieldCount(), 2)
+        XCTAssertEqual("...$1...$2...".snippetFieldCount(), 2)
     }
     
-    func testContentWithoutFieldMarkers() {
-        XCTAssertEqual("".contentWithoutFieldMarkers(), "")
-        XCTAssertEqual("$".contentWithoutFieldMarkers(), "$")
-        XCTAssertEqual("$1".contentWithoutFieldMarkers(), "")
-        XCTAssertEqual("$1$2".contentWithoutFieldMarkers(), "")
-        XCTAssertEqual("...$1...".contentWithoutFieldMarkers(), "......")
-        XCTAssertEqual("a$10b$20c".contentWithoutFieldMarkers(), "abc")
+    func testsnippetContentWithoutFieldMarkers() {
+        XCTAssertEqual("".snippetContentWithoutFieldMarkers(), "")
+        XCTAssertEqual("$".snippetContentWithoutFieldMarkers(), "$")
+        XCTAssertEqual("$1".snippetContentWithoutFieldMarkers(), "")
+        XCTAssertEqual("$1$2".snippetContentWithoutFieldMarkers(), "")
+        XCTAssertEqual("...$1...".snippetContentWithoutFieldMarkers(), "......")
+        XCTAssertEqual("a$10b$20c".snippetContentWithoutFieldMarkers(), "abc")
     }
     
-    func testContentReplacingFieldMarkersWithGroupExpressions() {
-        XCTAssertEqual("".contentReplacingFieldMarkersWithGroupExpressions(), "")
-        XCTAssertEqual("$".contentReplacingFieldMarkersWithGroupExpressions(), "$")
-        XCTAssertEqual("$1".contentReplacingFieldMarkersWithGroupExpressions(), "(.*)")
-        XCTAssertEqual("$1$2".contentReplacingFieldMarkersWithGroupExpressions(), "(.*)(.*)")
-        XCTAssertEqual("...$1...".contentReplacingFieldMarkersWithGroupExpressions(), "...(.*)...")
-        XCTAssertEqual("a$10b$20c".contentReplacingFieldMarkersWithGroupExpressions(), "a(.*)b(.*)c")
+    func testsnippetContentReplacingFieldMarkersWithGroupExpressions() {
+        XCTAssertEqual("".snippetContentReplacingFieldMarkersWithGroupExpressions(), "")
+        XCTAssertEqual("$".snippetContentReplacingFieldMarkersWithGroupExpressions(), "$")
+        XCTAssertEqual("$1".snippetContentReplacingFieldMarkersWithGroupExpressions(), "(.*)")
+        XCTAssertEqual("$1$2".snippetContentReplacingFieldMarkersWithGroupExpressions(), "(.*)(.*)")
+        XCTAssertEqual("...$1...".snippetContentReplacingFieldMarkersWithGroupExpressions(), "...(.*)...")
+        XCTAssertEqual("a$10b$20c".snippetContentReplacingFieldMarkersWithGroupExpressions(), "a(.*)b(.*)c")
     }
     
-    func testIndexOfField() {
-        XCTAssertEqual("".indexOfField(1), nil)
-        XCTAssertEqual("$1".indexOfField(1), 0)
-        XCTAssertEqual("$1 $2".indexOfField(1), 0)
-        XCTAssertEqual("$1 $2".indexOfField(2), 1)
-        XCTAssertEqual("$2 $1".indexOfField(1), 1)
+    func testsnippetIndexOfField() {
+        XCTAssertEqual("".snippetIndexOfField(1), nil)
+        XCTAssertEqual("$1".snippetIndexOfField(1), 0)
+        XCTAssertEqual("$1 $2".snippetIndexOfField(1), 0)
+        XCTAssertEqual("$1 $2".snippetIndexOfField(2), 1)
+        XCTAssertEqual("$2 $1".snippetIndexOfField(1), 1)
     }
 
 }

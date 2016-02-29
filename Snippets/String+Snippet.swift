@@ -11,7 +11,7 @@ import Foundation
 extension String {
     
     /// Returns the number of fields in a string
-    func fieldCount() -> Int {
+    func snippetFieldCount() -> Int {
         do {
             let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
             let range = entireNSRange()
@@ -25,7 +25,7 @@ extension String {
     }
     
     /// Removes the field markers from a string
-    func contentWithoutFieldMarkers() -> String {
+    func snippetContentWithoutFieldMarkers() -> String {
         do {
             let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
             let range = entireNSRange()
@@ -39,7 +39,7 @@ extension String {
     }
     
     /// Replaces the field markers in a string with capture groups
-    func contentReplacingFieldMarkersWithGroupExpressions() -> String {
+    func snippetContentReplacingFieldMarkersWithGroupExpressions() -> String {
         do {
             let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
             let range = entireNSRange()
@@ -53,7 +53,7 @@ extension String {
     }
     
     /// Returns the index of a field in a string
-    func indexOfField(field: Int) -> Int? {
+    func snippetIndexOfField(field: Int) -> Int? {
         do {
             let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
             let range = entireNSRange()

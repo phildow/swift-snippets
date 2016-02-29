@@ -29,7 +29,7 @@ class Snippet {
     private(set) var text: String
     
     /// The number of fields in the snippet
-    private var fieldCount: Int = 0
+    private var snippetFieldCount: Int = 0
     
     // MARK: - Initialization
     
@@ -46,8 +46,8 @@ class Snippet {
         self.scope = scope
         self.description = description
         
-        self.text = content.contentWithoutFieldMarkers()
-        self.fieldCount = content.fieldCount()
+        self.text = content.snippetContentWithoutFieldMarkers()
+        self.snippetFieldCount = content.snippetFieldCount()
     }
     
     // MARK: - Field Ranges
@@ -65,13 +65,13 @@ class Snippet {
         
         // Done if there are no fields
         
-        guard fieldCount > 0 else {
+        guard snippetFieldCount > 0 else {
             return nil
         }
         
         // Done if the last field wants to move forward
         
-        if field == fieldCount && forward {
+        if field == snippetFieldCount && forward {
             return nil
         }
         
@@ -85,11 +85,11 @@ class Snippet {
         
         let targetField = forward ? field + 1 : field - 1
         
-//        print("field is \(field) and target field is \(targetField), field count is \(fieldCount)")
+//        print("field is \(field) and target field is \(targetField), field count is \(snippetFieldCount)")
         
         // Find the index of the targetField in the content
         
-        guard let targetFieldIndex = content.indexOfField(targetField) else {
+        guard let targetFieldIndex = content.snippetIndexOfField(targetField) else {
             print("unable to locate field: \(targetField)")
             return nil
         }
@@ -100,7 +100,7 @@ class Snippet {
         
         do {
             let pattern = content
-                .contentReplacingFieldMarkersWithGroupExpressions()
+                .snippetContentReplacingFieldMarkersWithGroupExpressions()
                 .stringByEscapingForRegularExpressionPattern()
                 .stringByRestoringCaptureGroups()
             regex = try NSRegularExpression(pattern: pattern, options: [])

@@ -21,5 +21,4 @@ class SnippetTests: XCTestCase {
         super.tearDown()
     }
 
-  
 }

@@ -22,7 +22,21 @@ Snippets also support *fields*, which allow a user to continuing tabbing within 
 
 The insipration for this implementation comes from [Sublime Text](https://www.sublimetext.com/). Refer to the Sublime Text Snippets documentation for more information: [http://docs.sublimetext.info/en/latest/extensibility/snippets.html#snippet-features](http://docs.sublimetext.info/en/latest/extensibility/snippets.html#snippet-features)
 
-Only a subset of the snippets functionality in Sublime is supported right now. Fields are supported but the `$0` field is not. Snippet variables, mirrored fields, and placeholders are not supported. At some future point they may be.
+Only a subset of the snippets functionality in Sublime is supported right now. Fields are supported but the `$0` field is not. Snippet variables and  mirrored fields are not supported. At some future point they may be. Placeholders are now supported.
+
+**Syntax**
+
+Basic template syntax, using the dollar digit notation:
+
+```
+Foo $1 Bar $2 Baz
+```
+
+Placeholders are supported using the same syntax as Sublime:
+
+```
+Foo {$1:Qux} Bar {$2:corge} Baz
+```
 
 ## Demo
 

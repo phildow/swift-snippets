@@ -61,6 +61,9 @@ class SnippetTextViewHelper {
         // If we are already editing a snippet, advance to the next field or the end of the snippet
         // If there is no additional field, reset and let it fall through to another tab trigger
         
+        // ToDo: startIndex may have advanced beyond the length of the actual string if we're
+        // in the middle of a snipped that has been abandoned.
+        
         if currentSnippet != nil {
             if let fieldRange = currentSnippet!.rangeForNextField(fromField: fieldIndex, forward: forward, inString: textView.string!, atIndex: startIndex!) {
                 textView.setSelectedRange(textView.string!.NSRangeFromRange(fieldRange))

@@ -41,6 +41,16 @@ let htmlReverseSnippet =
 "</body>\n" +
 "</html>"
 
+let htmlPlaceholderSnippet =
+"<html>\n" +
+"<head>\n" +
+"  <title>{$1:title me}</title>\n" +
+"</head>\n" +
+"<body>\n" +
+"{$2:lorem...}\n" +
+"</body>\n" +
+"</html>"
+
 class ViewController: NSViewController {
     @IBOutlet private var textView: NSTextView!
    
@@ -50,6 +60,7 @@ class ViewController: NSViewController {
         Snippet(content: loremSnippet, tabTrigger: "lorem", scope: nil, description: nil),
         Snippet(content: htmlSnippet, tabTrigger: "html", scope: nil, description: nil),
         Snippet(content: htmlReverseSnippet, tabTrigger: "htmlx", scope: nil, description: nil),
+        Snippet(content: htmlPlaceholderSnippet, tabTrigger: "htmlp", scope: nil, description: nil),
         Snippet(content: LaTeXSnippet, tabTrigger: "sumoveriton", scope: nil, description: nil)
     ]
     

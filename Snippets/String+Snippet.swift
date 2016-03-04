@@ -16,6 +16,9 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+//  Regex: (\$\d+|\{\$\d+:.*?\})  (?:\{\$\d+:(.*?)\})|(?:\$\d+)
+//  Match either a basic field or a placeholder field, but only capture the content of the placeholder
+
 import Foundation
 
 extension String {
@@ -23,7 +26,7 @@ extension String {
     /// Returns the number of fields in a string
     func snippetFieldCount() -> Int {
         do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
+            let regex = try NSRegularExpression(pattern: "(?:\\{\\$\\d+:(.*?)\\})|(?:\\$\\d+)", options: [])
             let range = entireNSRange()
             
             let matches = regex.matchesInString(self, options: [], range: range)
@@ -37,9 +40,9 @@ extension String {
     /// Removes the field markers from a string
     func snippetContentWithoutFieldMarkers() -> String {
         do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
+            let regex = try NSRegularExpression(pattern: "(?:\\{\\$\\d+:(.*?)\\})|(?:\\$\\d+)", options: [])
             let range = entireNSRange()
-            let template = ""
+            let template = "$1"
             
             return regex.stringByReplacingMatchesInString(self, options: [], range: range, withTemplate: template)
         } catch {
@@ -51,7 +54,7 @@ extension String {
     /// Replaces the field markers in a string with capture groups
     func snippetContentReplacingFieldMarkersWithGroupExpressions() -> String {
         do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
+            let regex = try NSRegularExpression(pattern: "(?:\\{\\$\\d+:(.*?)\\})|(?:\\$\\d+)", options: [])
             let range = entireNSRange()
             let template = "(.*)"
             
@@ -65,9 +68,10 @@ extension String {
     /// Returns the index of a field in a string
     func snippetIndexOfField(field: Int) -> Int? {
         do {
-            let regex = try NSRegularExpression(pattern: "\\$\\d+", options: [])
+            let regex = try NSRegularExpression(pattern: "(?:\\{\\$\\d+:(.*?)\\})|(?:\\$\\d+)", options: [])
             let range = entireNSRange()
-            let marker = "$\(field)"
+            let marker1 = "$\(field)"
+            let marker2 = "{$\(field):"
             
             let matches = regex.matchesInString(self, options: [], range: range)
             
@@ -76,7 +80,8 @@ extension String {
                 guard let matchRange = rangeFromNSRange(result.range) else {
                     return false
                 }
-                return substringWithRange(matchRange) == marker
+                let substring = substringWithRange(matchRange)
+                return substring == marker1 || substring.hasPrefix(marker2)
             })
             
         } catch {

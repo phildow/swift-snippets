@@ -16,7 +16,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 A snippet is text that replaces an alphanumeric word when the tab key is pressed. It expands the word into the snippet.
 
-Snippets also support *fields*, which allow a user to continuing tabbing within the snippet to move the insertion point to predetermined locations in the snippet. Consequently a snippet is able to behave like a template with empty placeholders that are efficiently filled in.
+Snippets also support *fields*, which allow a user to continuing tabbing within the snippet to move the insertion point to predetermined locations in the snippet. Consequently a snippet is able to behave like a template with placeholders that are efficiently filled in.
 
 **Sublime Text**
 
